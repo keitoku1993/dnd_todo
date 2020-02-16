@@ -1,26 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react'
+import { DndProvider } from 'react-dnd'
+import Backend from 'react-dnd-html5-backend'
+import AddTag from './AddTag';
+import TodoBoard from './TodoBoard';
+import ProgressBoard from './ProgressBoard';
+import DoneBoard from './DoneBoard';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const containerStyle = {
+  display: 'flex',
+  width: '980px',
+  justifyContent: 'space-around'
+}
+
+const App = () => {
+  const [tasks, setTasks] = useState(JSON.parse(localStorage.getItem('tasks')));
+
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks])
+  
+	return (
+		<div className="App">
+			<DndProvider backend={Backend}>
+        <AddTag tasks={tasks} setTasks={setTasks} />
+        <div style={containerStyle}>
+          <TodoBoard tasks={tasks} setTasks={tasks => setTasks(tasks)} />
+          <ProgressBoard tasks={tasks} setTasks={tasks => setTasks(tasks)} />
+          <DoneBoard tasks={tasks} setTasks={tasks => setTasks(tasks)} />
+        </div>
+			</DndProvider>
+		</div>
+	)
 }
 
 export default App;
